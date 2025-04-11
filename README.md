@@ -149,7 +149,3 @@ Centralized and consistent error responses:
 - `500` – Server Error
 
 ------
-
-## 📄 License
-
-Licensed under the ISC License © Ashish Vora
