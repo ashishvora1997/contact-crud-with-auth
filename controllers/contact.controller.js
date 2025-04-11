@@ -9,8 +9,6 @@ const Contact = require("../models/contact.modal");
  * @param {*} res
  */
 const getContacts = asyncHandler(async (req, res) => {
-  console.log("req.user", req.user);
-  
   const contacts = await Contact.find({ user_id: req.user.id }).sort({ createdAt: -1 });
   res.status(200).json(contacts);
 });
@@ -24,8 +22,6 @@ const getContacts = asyncHandler(async (req, res) => {
  */
 const getContactDetail = asyncHandler(async (req, res) => {
   const contact = await Contact.findById(req.params.id);
-  console.log("contact", contact);
-  
   if (!contact) {
     res.status(404);
     throw new Error("Contact not found");
@@ -37,9 +33,6 @@ const getContactDetail = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json(contact);
-  // res.status(200).json({
-  //   message: "Get Contact Details",
-  // });
 });
 
 /**
@@ -50,13 +43,9 @@ const getContactDetail = asyncHandler(async (req, res) => {
  * @param {*} res
  */
 const createContact = asyncHandler(async (req, res) => {
-  console.log(req.body);
   const { name, email, phone } = req.body;
   // Validate the request body
   if (!name || !email || !phone) {
-    // return res.status(400).json({
-    //   message: "Please provide all required fields",
-    // });
     res.status(400);
     throw new Error("Please provide all required fields");
   }

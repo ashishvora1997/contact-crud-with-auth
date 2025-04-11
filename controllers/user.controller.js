@@ -20,7 +20,6 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const isUserAvailable = await User.findOne({ email });
-  console.log("User available", isUserAvailable);
 
   if (isUserAvailable) {
     res.status(400);
@@ -29,7 +28,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
-  console.log("hashed password", hashedPassword);
 
   // Create a new user
   const user = await User.create({
@@ -37,8 +35,6 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password: hashedPassword,
   });
-
-  console.log("user", user);
 
   if (user) {
     res.status(201).json({
@@ -54,13 +50,6 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User registration failed");
   }
-  // res.status(200).json({
-  //   message: "User registration route",
-  //   name,
-  //   email,
-  //   password,
-  //   hashedPassword
-  // });
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -101,12 +90,6 @@ const loginUser = asyncHandler(async (req, res) => {
 
   res.status(401);
   throw new Error("Invalid credentials");
-
-  // res.status(200).json({
-  //   message: "User login route",
-  //   email,
-  //   password,
-  // });
 });
 
 /**
