@@ -1,5 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user.modal");
+
 
 const validateToken = asyncHandler(async (req, res, next) => {
   let token;
@@ -22,6 +24,11 @@ const validateToken = asyncHandler(async (req, res, next) => {
           return decoded;
         }
       );
+
+      const user = await User.findOne({ email: decoded.user.email });
+      if (!user) {
+        res.status(500).json({ message: "User not Exist, maybe deleted"});
+      }
 
       // Attach user to request object
       req.user = decoded.user;

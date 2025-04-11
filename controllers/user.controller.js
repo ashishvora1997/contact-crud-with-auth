@@ -104,10 +104,65 @@ const getUserProfile = asyncHandler(async (req, res) => {
   });
 });
 
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const userDetail = await User.findById(req.user.id);
+
+  if (!userDetail) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  const updateUser = await User.findByIdAndUpdate(req.user.id, req.body, {
+    new: true,
+  });
+  console.log("userDetail", req.user, userDetail);
+  res.status(200).json({
+    message: "user update successfully",
+    // user: updateUser,
+  });
+});
+
+const deleteUserProfile = asyncHandler(async (req, res) => {
+  await User.deleteOne({ _id: req.user.id });
+  res.status(200).json({
+    message: `Delete Contact route, id: ${req.user.id}`,
+    user: req.user,
+  });
+});
+
+const changeUserPassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  // Validate the request body
+  if (!oldPassword || !newPassword) {
+    res.status(400);
+    throw new Error("Please provide all required fields");
+  }
+
+  const userDetail = await User.findById(req.user.id);
+
+  if (await bcrypt.compare(oldPassword, userDetail.password)) {
+    const password = await bcrypt.hash(newPassword, 10);
+
+    await User.findByIdAndUpdate(
+      req.user.id,
+      { password },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json({
+      message: "Password updated successfully",
+    });
+  }
+  res.status(401);
+  throw new Error("Invalid credentials");
+});
+
 module.exports = {
   registerUser,
   loginUser,
   getUserProfile,
-  // updateUserProfile,
-  // deleteUser,
+  updateUserProfile,
+  deleteUserProfile,
+  changeUserPassword,
 };
